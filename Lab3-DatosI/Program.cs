@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+using System.Xml.Schema;
 
 namespace Lab3_DatosI
 {
@@ -14,10 +15,11 @@ namespace Lab3_DatosI
     {
         static void Main(string[] args)
         {
-            string Customer = @"C:\Users\sical\OneDrive\Escritorio\input_customer_example_lab_3.jsonl";
+            #region Lectura de deserializacion
+            string Custom = @"C:\Users\sical\OneDrive\Escritorio\input_customer_example_lab_3.jsonl";
             string Auctions = @"C:\Users\sical\OneDrive\Escritorio\input_auctions_example_lab_3.jsonl";
             // Lee el contenido del archivo
-            string fileCustomer = File.ReadAllText(Customer);
+            string fileCustomer = File.ReadAllText(Custom);
             string fileAuctions = File.ReadAllText(Auctions);
             // Separa los objetos JSON utilizando una expresión regular
             var regex = new Regex(@"\{.*?\}(?=\s*\{|\s*$)", RegexOptions.Singleline);
@@ -25,27 +27,49 @@ namespace Lab3_DatosI
             var jsonAuctions = regex.Matches(fileAuctions);
 
             // Deserializa cada objeto JSON en una instancia de las clases Client
-            List<Client> Bettors = new List<Client>();
-            foreach (Match jsonMatch in jsonCustomer)
-            {
-                string jsonString = jsonMatch.Value;
-                Client cliente = JsonConvert.DeserializeObject<Client>(jsonString);
-                Bettors.Add(cliente);
-            }
-            // Deserializa cada objeto JSON en una instancia de las clases Customers
-            List<PropertyData> Customers = new List<PropertyData>();
-            foreach(Match jsonMatch in jsonAuctions)
+            List<PropertyData> Bettors = new List<PropertyData>();
+
+            foreach (Match jsonMatch in jsonAuctions)
             {
                 string jsonString = jsonMatch.Value;
                 PropertyData cliente = JsonConvert.DeserializeObject<PropertyData>(jsonString);
-                Customers.Add(cliente);
+                Bettors.Add(cliente);
             }
+            // Deserializa cada objeto JSON en una instancia de las clases Customers
+            List<Client> Clientes = new List<Client>();
+            foreach(Match jsonMatch in jsonCustomer)
+            {
+                string jsonString = jsonMatch.Value;
+                Client cliente = JsonConvert.DeserializeObject<Client>(jsonString);
+                Clientes.Add(cliente);
+            }
+            #endregion
+
+            //Creamos un arbol
+            ArbolBin tree = new ArbolBin();
+            int n=0;
+            foreach (Client client in Clientes)
+            {
+                tree.Inserta(client);
+            }
+            long dpiToFind = 4866841378551;
+            Client foundClient = tree.Encontrar(dpiToFind);
+
+            if (foundClient != null)
+            {
+                Console.WriteLine($"Client found: DPI: {foundClient.DPI}, Name: {foundClient.firstName} {foundClient.lastName}, Birth Date: {foundClient.birthDate.ToShortDateString()}, Job: {foundClient.job}, Place Job: {foundClient.placeJob}, Salary: {foundClient.salary}");
+            }
+            else
+            {
+                Console.WriteLine($"Client with DPI {dpiToFind} not found");
+            }
+
         }
     }
     #region clases generales
     public class Client
     {
-        public string DPI { get; set; }
+        public long DPI { get; set; }
         public string firstName { get; set; }
         public string lastName { get; set; }
         public DateTime birthDate { get; set; }
