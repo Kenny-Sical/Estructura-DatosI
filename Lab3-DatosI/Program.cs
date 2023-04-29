@@ -52,18 +52,47 @@ namespace Lab3_DatosI
             {
                 tree.Inserta(client);
             }
-            long dpiToFind = 4866841378551;
-            Client foundClient = tree.Encontrar(dpiToFind);
-
-            if (foundClient != null)
+            foreach (PropertyData dato in Bettors)
             {
-                Console.WriteLine($"Client found: DPI: {foundClient.DPI}, Name: {foundClient.firstName} {foundClient.lastName}, Birth Date: {foundClient.birthDate.ToShortDateString()}, Job: {foundClient.job}, Place Job: {foundClient.placeJob}, Salary: {foundClient.salary}");
-            }
-            else
-            {
-                Console.WriteLine($"Client with DPI {dpiToFind} not found");
+                long ganador;
+                // Guardar los valores de DPI y Budget en una lista de tuplas
+                List<Tuple<long, int>> dpiBudgetPairs = new List<Tuple<long, int>>();
+                // Crear una nueva lista de Customer para almacenar los valores ordenados
+                List<Customer> orderedCustomers = new List<Customer>();
+
+                foreach (Customer customer in dato.Customers)
+                {
+                    dpiBudgetPairs.Add(new Tuple<long, int>(customer.Dpi, customer.Budget));
+                }
+
+                // Ordenar la lista de tuplas según el Budget
+                dpiBudgetPairs.Sort((x, y) => y.Item2.CompareTo(x.Item2));
+
+                // Añadir los objetos Customer en el orden en que aparecen en la lista de tuplas ordenada
+                foreach (Tuple<long, int> pair in dpiBudgetPairs)
+                {
+                    Customer orderedCustomer = dato.Customers.Find(c => c.Dpi == pair.Item1);
+                    orderedCustomers.Add(orderedCustomer);
+                }
+                ganador = winning(orderedCustomers, dato.Rejection);
+                //Busqueda
+                Client foundClient = tree.Encontrar(ganador);
+
+                if (foundClient != null)
+                {
+                    Console.WriteLine($"Client found: DPI: {foundClient.DPI}, Name: {foundClient.firstName} {foundClient.lastName}, Birth Date: {foundClient.birthDate.ToShortDateString()}, Job: {foundClient.job}, Place Job: {foundClient.placeJob}, Salary: {foundClient.salary}");
+                }
+                else
+                {
+                    Console.WriteLine($"Client with DPI {ganador} not found");
+                }
             }
 
+        }
+        public static long winning(List<Customer> customers, int n)
+        {
+            long ganador = customers[n].Dpi;
+            return ganador;
         }
     }
     #region clases generales
