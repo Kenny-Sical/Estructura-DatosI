@@ -40,12 +40,9 @@ namespace Lab3_DatosI
                 PropertyData cliente = JsonConvert.DeserializeObject<PropertyData>(jsonString);
                 Customers.Add(cliente);
             }
-            foreach (Client Bettor in Bettors)
-            {
-                Console.WriteLine(Bettor.DPI);
-            }
         }
     }
+    #region clases generales
     public class Client
     {
         public string DPI { get; set; }
@@ -79,4 +76,5 @@ namespace Lab3_DatosI
         [JsonProperty("date")]
         public DateTime Date { get; set; }
     }
+    #endregion
 }
