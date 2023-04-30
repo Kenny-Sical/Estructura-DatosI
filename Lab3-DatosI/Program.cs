@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
 using System.Xml.Schema;
+using System.Security.Cryptography;
 
 namespace Lab3_DatosI
 {
@@ -16,8 +17,8 @@ namespace Lab3_DatosI
         static void Main(string[] args)
         {
             #region Lectura de deserializacion
-            string Custom = @"C:\Users\sical\OneDrive\Escritorio\input_customer_example_lab_3.jsonl";
-            string Auctions = @"C:\Users\sical\OneDrive\Escritorio\input_auctions_example_lab_3.jsonl";
+            string Custom = @"C:\Users\sical\OneDrive\Escritorio\input_customer_challenge_lab_3.jsonl";
+            string Auctions = @"C:\Users\sical\OneDrive\Escritorio\input_auctions_challenge_lab_3.jsonl";
             // Lee el contenido del archivo
             string fileCustomer = File.ReadAllText(Custom);
             string fileAuctions = File.ReadAllText(Auctions);
@@ -76,18 +77,20 @@ namespace Lab3_DatosI
                 //Busqueda
                 Client foundClient = tree.Encontrar(ganador);
                 int budget = Budget(orderedCustomers, dato.Rejection);
+                string signature = HashCustomer(foundClient);
                 if (foundClient != null)
                 {
-                    Console.WriteLine($"{{\"dpi\": {foundClient.DPI}, \"budget\": {budget}, \"date\": {DateTime.Now}, \"firstName\": {foundClient.firstName},\"lastName\":\"{foundClient.lastName}\", \"birthDate\":\"{foundClient.birthDate.ToShortDateString()}\",\"job\":\"{foundClient.job}\",\"placeJob\":\"{foundClient.placeJob}\",\"salary\":\"{foundClient.salary}\",\"property\":\"{dato.Property}\"}}");
+                    Console.WriteLine($"{{\"dpi\": {foundClient.DPI}, \"budget\": {budget}, \"date\": {DateTime.Now}, \"firstName\": {foundClient.firstName},\"lastName\":\"{foundClient.lastName}\", \"birthDate\":\"{foundClient.birthDate.ToShortDateString()}\",\"job\":\"{foundClient.job}\",\"placeJob\":\"{foundClient.placeJob}\",\"salary\":\"{foundClient.salary}\",\"property\":\"{dato.Property}\",\"signature\":{signature}}}");
                 }
                 else
                 {
                     Console.WriteLine($"Client with DPI {ganador} not found");
                 }
-                //{'dpi': 9002875369941, 'budget': 7223, 'date': '2023-04-29:16:08:48:', 'firstName': 'June', 'lastName': 'Fadel', 'birthDate': '1993-10-10T20:23:03.128Z', 'job': 'Principal Configuration Engineer', 'placeJob': 'Shieldshaven', 'salary': 5901, 'property': 'A-0', 'signature': '392c24d21ec53b625c78556f878ef2bc2ef6eda16db728149b279afc916b9300'}
+                
             }
             Console.ReadLine();
         }
+        #region metodos
         public static long winning(List<Customer> customers, int n)
         {
             long ganador = customers[n].Dpi;
@@ -98,6 +101,20 @@ namespace Lab3_DatosI
             int budget = customers[n].Budget;
             return budget;
         }
+        public static string HashCustomer(Client customer)
+        {
+            string data_str = customer.firstName + customer.job + customer.salary;
+
+            using (SHA256 hash_obj = SHA256.Create())
+            {
+                byte[] data_bytes = Encoding.ASCII.GetBytes(data_str);
+                byte[] hash_bytes = hash_obj.ComputeHash(data_bytes);
+                string hash_value = BitConverter.ToString(hash_bytes).Replace("-", "").ToLowerInvariant();
+
+                return hash_value;
+            }
+        }
+        #endregion
     }
     #region clases generales
     public class Client
