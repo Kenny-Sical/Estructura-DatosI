@@ -59,6 +59,13 @@ namespace Lab3_DatosI
                 List<Tuple<long, int>> dpiBudgetPairs = new List<Tuple<long, int>>();
                 // Crear una nueva lista de Customer para almacenar los valores ordenados
                 List<Customer> orderedCustomers = new List<Customer>();
+                foreach (Customer customer in dato.Customers)
+                {
+                    dpiBudgetPairs.Add(new Tuple<long, int>(customer.Dpi, customer.Budget));
+                }
+
+                // Ordenar la lista de tuplas según el Budget
+                dpiBudgetPairs.Sort((x, y) => y.Item2.CompareTo(x.Item2));
 
                 //{'dpi': 9002875369941, 'budget': 7223, 'date': '2023-04-29:16:08:48:', 'firstName': 'June', 'lastName': 'Fadel', 'birthDate': '1993-10-10T20:23:03.128Z', 'job': 'Principal Configuration Engineer', 'placeJob': 'Shieldshaven', 'salary': 5901, 'property': 'A-0', 'signature': '392c24d21ec53b625c78556f878ef2bc2ef6eda16db728149b279afc916b9300'}
             }
