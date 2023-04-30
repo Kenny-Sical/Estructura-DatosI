@@ -74,9 +74,24 @@ namespace Lab3_DatosI
                     orderedCustomers.Add(orderedCustomer);
                 }
                 ganador = winning(orderedCustomers, dato.Rejection);
+                //Heap
+                // Crear un MinHeap y agregar los Customers
+                MinHeap minHeap = new MinHeap();
+                foreach (Customer customer in dato.Customers)
+                {
+                    minHeap.Insert(customer);
+                }
+
+                // Extraer los elementos del MinHeap y almacenarlos en una lista ordenada
+                List<Customer> orderedCustom = new List<Customer>();
+                Customer max;
+                while ((max = minHeap.ExtractMax()) != null)
+                {
+                    orderedCustom.Add(max);
+                }
                 //Busqueda
                 Client foundClient = tree.Encontrar(ganador);
-                int budget = Budget(orderedCustomers, dato.Rejection);
+                int budget = Budget(orderedCustom, dato.Rejection);
                 string signature = HashCustomer(foundClient);
                 if (foundClient != null)
                 {
