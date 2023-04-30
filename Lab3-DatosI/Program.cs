@@ -73,14 +73,30 @@ namespace Lab3_DatosI
                     orderedCustomers.Add(orderedCustomer);
                 }
                 ganador = winning(orderedCustomers, dato.Rejection);
+                //Busqueda
+                Client foundClient = tree.Encontrar(ganador);
+                int budget = Budget(orderedCustomers, dato.Rejection);
+                if (foundClient != null)
+                {
+                    Console.WriteLine($"{{\"dpi\": {foundClient.DPI}, \"budget\": {budget}, \"date\": {DateTime.Now}, \"firstName\": {foundClient.firstName},\"lastName\":\"{foundClient.lastName}\", \"birthDate\":\"{foundClient.birthDate.ToShortDateString()}\",\"job\":\"{foundClient.job}\",\"placeJob\":\"{foundClient.placeJob}\",\"salary\":\"{foundClient.salary}\",\"property\":\"{dato.Property}\"}}");
+                }
+                else
+                {
+                    Console.WriteLine($"Client with DPI {ganador} not found");
+                }
                 //{'dpi': 9002875369941, 'budget': 7223, 'date': '2023-04-29:16:08:48:', 'firstName': 'June', 'lastName': 'Fadel', 'birthDate': '1993-10-10T20:23:03.128Z', 'job': 'Principal Configuration Engineer', 'placeJob': 'Shieldshaven', 'salary': 5901, 'property': 'A-0', 'signature': '392c24d21ec53b625c78556f878ef2bc2ef6eda16db728149b279afc916b9300'}
             }
-
+            Console.ReadLine();
         }
         public static long winning(List<Customer> customers, int n)
         {
             long ganador = customers[n].Dpi;
             return ganador;
+        }
+        public static int Budget(List<Customer> customers, int n)
+        {
+            int budget = customers[n].Budget;
+            return budget;
         }
     }
     #region clases generales
