@@ -37,7 +37,7 @@ namespace Lab3_DatosI
             }
             // Deserializa cada objeto JSON en una instancia de las clases Customers
             List<Client> Clientes = new List<Client>();
-            foreach(Match jsonMatch in jsonCustomer)
+            foreach (Match jsonMatch in jsonCustomer)
             {
                 string jsonString = jsonMatch.Value;
                 Client cliente = JsonConvert.DeserializeObject<Client>(jsonString);
@@ -51,7 +51,15 @@ namespace Lab3_DatosI
             {
                 tree.Inserta(client);
             }
-           
+            //Encontrar ganador
+            foreach (PropertyData dato in Bettors)
+            {
+                long ganador;
+                // Guardar los valores de DPI y Budget en una lista de tuplas
+                List<Tuple<long, int>> dpiBudgetPairs = new List<Tuple<long, int>>();
+                // Crear una nueva lista de Customer para almacenar los valores ordenados
+                List<Customer> orderedCustomers = new List<Customer>();
+
                 //{'dpi': 9002875369941, 'budget': 7223, 'date': '2023-04-29:16:08:48:', 'firstName': 'June', 'lastName': 'Fadel', 'birthDate': '1993-10-10T20:23:03.128Z', 'job': 'Principal Configuration Engineer', 'placeJob': 'Shieldshaven', 'salary': 5901, 'property': 'A-0', 'signature': '392c24d21ec53b625c78556f878ef2bc2ef6eda16db728149b279afc916b9300'}
             }
 
@@ -92,4 +100,5 @@ namespace Lab3_DatosI
         public DateTime Date { get; set; }
     }
     #endregion
+}
 
